@@ -96,7 +96,7 @@ app.post('/api/review', async c => {
 
   // Persist to KV (best-effort — don't fail the request if KV is unavailable)
   try {
-    await c.env.KV.put(`review:${id}`, JSON.stringify({
+    await c.env.KV?.put(`review:${id}`, JSON.stringify({
       id, ts, language, scores: { security: secScore, performance: perfScore, style: styleScore, overall },
       summary: { total: allIssues.length, critical, warnings: allIssues.filter(i => i.severity === 'warning').length },
     }), { expirationTtl: 86_400 });
@@ -119,8 +119,8 @@ app.post('/api/review', async c => {
 /** Retrieve a cached review */
 app.get('/api/review/:id', async c => {
   try {
-    const data = await c.env.KV.get(`review:${c.req.param('id')}`);
-    if (!data) return c.json({ status: 'error', message: 'Review not found' }, 404);
+   const data = await c.env.KV?.get(`review:${c.req.param('id')}`);
+    if (!data) return c.json({ status: 'error', message: 'Review not found (KV not configured)' }, 404);
     return c.json(JSON.parse(data));
   } catch {
     return c.json({ status: 'error', message: 'Could not retrieve review (KV unavailable in local dev)' }, 503);
