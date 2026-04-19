@@ -1,0 +1,4 @@
+name = "cf_ai_code_review_agent"
+main = "src/index.ts"
+compatibility_date = "2025-04-18"
+compatibility_flags = ["nodejs_compat"]
